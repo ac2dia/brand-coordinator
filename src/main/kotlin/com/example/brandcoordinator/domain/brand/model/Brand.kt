@@ -13,4 +13,16 @@ class Brand(
     val id: Long = 0,
     @Column(nullable = false)
     var name: String,
-) : BaseEntity()
+) {
+    companion object {
+        fun from(brandPostRequest: BrandPostRequest): Brand {
+            return Brand(
+                name = brandPostRequest.name,
+            )
+        }
+    }
+
+    fun update(name: String) {
+        this.name = name
+    }
+}

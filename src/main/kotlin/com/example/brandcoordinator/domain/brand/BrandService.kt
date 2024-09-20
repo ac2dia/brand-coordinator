@@ -6,7 +6,7 @@ import com.example.brandcoordinator.domain.brand.dto.BrandResponse
 
 interface BrandService {
     fun findAll(): List<BrandResponse>
-    fun save(brand: BrandPostRequest)
-    fun update(brand: BrandPatchRequest): BrandResponse
-    fun delete(id: String)
+    fun save(brandPostRequest: BrandPostRequest)
+    fun update(id: Long, brandPatchRequest: BrandPatchRequest): BrandResponse
+    fun delete(id: Long)
 }
