@@ -1,6 +1,6 @@
 package com.example.brandcoordinator.domain.brand.model
 
-import com.example.brandcoordinator.common.entity.BaseEntity
+import com.example.brandcoordinator.domain.brand.dto.BrandPostRequest
 import jakarta.persistence.Column
 import jakarta.persistence.Entity
 import jakarta.persistence.GeneratedValue

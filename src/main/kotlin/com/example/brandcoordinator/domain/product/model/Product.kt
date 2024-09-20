@@ -1,6 +1,5 @@
 package com.example.brandcoordinator.domain.product.model
 
-import com.example.brandcoordinator.common.entity.BaseEntity
 import com.example.brandcoordinator.domain.brand.model.Brand
 import jakarta.persistence.Column
 import jakarta.persistence.Entity
@@ -22,4 +21,4 @@ class Product(
     var brand: Brand,
     @Column(nullable = false)
     var price: Int,
-) : BaseEntity()
+)
