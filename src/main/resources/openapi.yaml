@@ -1,55 +1,241 @@
 openapi: 3.0.3
 info:
-  title: Pet Store
+  title: Brand Coordinator
   description: Swagger
   version: 1.0.0
 servers:
   - url: http://localhost:8080
 tags:
-  - name: pet
-    description: Everything about your Pets
+  - name: product
+    description: everything about product
+  - name: brand
+    description: everything about brand
 paths:
-  /pet:
-    put:
+  '/api/v1/products':
+    get:
       tags:
-        - pet
-      summary: Update an existing pet
-      description: Update an existing pet by Id
-      operationId: updatePet
-      requestBody:
-        description: Update an existent pet in the store
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/Pet'
-        required: true
+        - product
+      summary: Find all products
+      description: Find all products
       responses:
         '200':
           description: Successful operation
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Pet'
-            application/xml:
-              schema:
-                $ref: '#/components/schemas/Pet'
+                type: array
+                items:
+                  $ref: '#/components/schemas/Product'
         '400':
-          description: Invalid ID supplied
+          description: Invalid request
+    post:
+      tags:
+        - product
+      summary: Add product
+      description: Add product
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ProductPostRequest'
+      responses:
+        '200':
+          description: Successful operation
+        '400':
+          description: Invalid request
+  '/api/v1/products/{id}':
+    patch:
+      tags:
+        - product
+      summary: Update product
+      description: Update product
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int64
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ProductPatchRequest'
+      responses:
+        '200':
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Product'
         '404':
-          description: Pet not found
-        '422':
-          description: Validation exception
+          description: Not found
+    delete:
+      tags:
+        - product
+      summary: Delete product
+      description: Delete product
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int64
+      responses:
+        '200':
+          description: Successful operation
+        '404':
+          description: Not found
+  '/api/v1/brands':
+    get:
+      tags:
+        - brand
+      summary: Find all brands
+      description: Find all brands
+      responses:
+        '200':
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Brand'
+    post:
+      tags:
+        - brand
+      summary: Add brand
+      description: Add brand
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/BrandPostRequest'
+      responses:
+        '200':
+          description: Successful operation
+        '400':
+          description: Invalid request
+  '/api/v1/brands/{id}':
+    patch:
+      tags:
+        - brand
+      summary: Update brand
+      description: Update brand
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int64
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/BrandPatchRequest'
+      responses:
+        '200':
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Brand'
+        '404':
+          description: Not found
+    delete:
+      tags:
+        - brand
+      summary: Delete brand
+      description: Delete brand
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int64
+      responses:
+        '200':
+          description: Successful operation
+        '404':
+          description: Not found
 components:
   schemas:
-    Pet:
-      required:
-        - name
+    Product:
       type: object
       properties:
         id:
           type: integer
           format: int64
-          example: 10
+          example: 1
+        category:
+          type: string
+          example: 상의
+        brand_name:
+          type: string
+          example: A
+        price:
+          type: integer
+          example: 10000
+        created_at:
+          type: string
+          format: date-time
+          example: 2024-09-20T12:30:00.123Z
+        updated_at:
+          type: string
+          format: date-time
+          example: 2024-09-20T12:30:00.123Z
+    ProductPostRequest:
+      type: object
+      required:
+        - category
+      properties:
+        category:
+          type: string
+          example: 정장
+    ProductPatchRequest:
+      type: object
+      properties:
+        price:
+          type: integer
+          example: 200000
+    Brand:
+      type: object
+      properties:
+        id:
+          type: integer
+          format: int64
+          example: 1
         name:
           type: string
-          example: doggie
+          example: A
+        created_at:
+          type: string
+          format: date-time
+          example: 2024-09-20T12:30:00.123Z
+        updated_at:
+          type: string
+          format: date-time
+          example: 2024-09-20T12:30:00.123Z
+    BrandPostRequest:
+      type: object
+      required:
+        - name
+      properties:
+        name:
+          type: string
+          example: A
+    BrandPatchRequest:
+      type: object
+      properties:
+        name:
+          type: string
+          example: B
