@@ -13,4 +13,4 @@ class Brand(
     val id: Long = 0,
     @Column(nullable = false)
     var name: String,
-): BaseEntity()
+) : BaseEntity()

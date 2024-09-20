@@ -22,4 +22,4 @@ class Product(
     var brand: Brand,
     @Column(nullable = false)
     var price: Int,
-): BaseEntity()
+) : BaseEntity()
