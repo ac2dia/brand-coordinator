@@ -1,0 +1,60 @@
+server:
+  port: 8080
+  shutdown: graceful
+
+management:
+  endpoint:
+    health:
+      group:
+        start:
+          additional-path: server:/startupz
+          include: ping, db
+          status:
+            http-mapping:
+              up: 200
+              unknown: 503
+              down: 503
+              out_of_service: 503
+        live:
+          additional-path: server:/livez
+          include: ping
+          status:
+            http-mapping:
+              up: 200
+              unknown: 503
+              down: 503
+              out_of_service: 503
+        ready:
+          additional-path: server:/readyz
+          include: ping, db
+          status:
+            http-mapping:
+              up: 200
+              unknown: 503
+              down: 503
+              out_of_service: 503
+
+springdoc:
+  swagger-ui:
+    url: /docs/opeapi.yaml
+
+logging:
+  level:
+    root: info
+    web: info
+    sql: error
+
+---
+spring:
+  datasource:
+    driver-class-name: org.h2.Driver
+    url: jdbc:h2:mem:testdb
+    username: sa
+    password:
+  jpa:
+    hibernate:
+      ddl-auto: update
+    properties:
+      hibernate:
+        show_sql: true
+        format_sql: true
