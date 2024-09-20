@@ -1,6 +1,6 @@
 package com.example.brandcoordinator.domain.brand.model
 
-import com.example.brandcoordinator.common.entity.BaseEntity
+import com.example.brandcoordinator.domain.brand.dto.BrandPostRequest
 import jakarta.persistence.Column
 import jakarta.persistence.Entity
 import jakarta.persistence.GeneratedValue
@@ -13,4 +13,16 @@ class Brand(
     val id: Long = 0,
     @Column(nullable = false)
     var name: String,
-): BaseEntity()
+) {
+    companion object {
+        fun from(brandPostRequest: BrandPostRequest): Brand {
+            return Brand(
+                name = brandPostRequest.name,
+            )
+        }
+    }
+
+    fun update(name: String) {
+        this.name = name
+    }
+}
