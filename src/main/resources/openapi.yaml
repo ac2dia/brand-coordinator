@@ -39,6 +39,19 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/BrandProductSummaryResponse'
+  '/api/v1/get-summary-lowest-brand':
+    get:
+      tags:
+        - summary
+      summary: Get summary lowest brand
+      description: Get summary lowest brand
+      responses:
+        '200':
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/LowestBrandProductSummaryResponse'
   '/api/v1/products':
     get:
       tags:
@@ -213,28 +226,34 @@ components:
         price:
           type: integer
           example: 10000
-        created_at:
-          type: string
-          format: date-time
-          example: 2024-09-20T12:30:00.123Z
-        updated_at:
-          type: string
-          format: date-time
-          example: 2024-09-20T12:30:00.123Z
     ProductPostRequest:
       type: object
       required:
         - category
+        - brand_name
+        - price
       properties:
         category:
           type: string
           example: 정장
-    ProductPatchRequest:
-      type: object
-      properties:
+        brand_name:
+          type: string
+          example: A
         price:
           type: integer
           example: 200000
+    ProductPatchRequest:
+      type: object
+      properties:
+        category:
+          type: string
+          example: 정장
+        brand_name:
+          type: string
+          example: A
+        price:
+          type: integer
+          example: 300000
     Brand:
       type: object
       properties:
@@ -245,14 +264,6 @@ components:
         name:
           type: string
           example: A
-        created_at:
-          type: string
-          format: date-time
-          example: 2024-09-20T12:30:00.123Z
-        updated_at:
-          type: string
-          format: date-time
-          example: 2024-09-20T12:30:00.123Z
     BrandPostRequest:
       type: object
       required:
@@ -269,6 +280,10 @@ components:
           example: B
     CategoryBrandProductSummaryResponse:
       type: object
+      required:
+        - category
+        - minimum
+        - maximum
       properties:
         category:
           type: string
@@ -287,6 +302,9 @@ components:
             - {brand_name: I, price: 11400}
     BrandProductSummaryResponse:
       type: object
+      required:
+        - amount
+        - products
       properties:
         amount:
           type: integer
@@ -304,8 +322,36 @@ components:
             - {category: 모자, brand_name: D, price: 1500}
             - {category: 양말, brand_name: I, price: 1700}
             - {category: 액세서리, brand_name: F, price: 1900}
+    LowestBrandProductSummaryResponse:
+      type: object
+      required:
+        - brand_name
+        - products
+        - amount
+      properties:
+        brand_name:
+          type: string
+          example: D
+        products:
+          type: array
+          items:
+            $ref: '#/components/schemas/BrandProduct'
+          example:
+            - { category: 상의, price: 10100 }
+            - { category: 아우터, price: 5100 }
+            - { category: 바지, price: 3000 }
+            - { category: 스니커즈, price: 9500 }
+            - { category: 가방, price: 2500 }
+            - { category: 모자, price: 1500 }
+            - { category: 양말, price: 2400 }
+            - { category: 액세서리, price: 2000 }
+        amount:
+          type: integer
+          example: 36100
     BrandProduct:
       type: object
+      required:
+        - price
       properties:
         category:
           type: string
