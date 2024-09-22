@@ -3,29 +3,31 @@ package com.example.brandcoordinator.domain.brand
 import com.example.brandcoordinator.domain.brand.model.Brand
 import io.kotest.core.spec.style.BehaviorSpec
 import io.kotest.matchers.shouldBe
-import jakarta.transaction.Transactional
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest
+import org.springframework.transaction.annotation.Transactional
 
 
 @DataJpaTest
-@Transactional
 @AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
+@Transactional
 class BrandRepositoryTest(
     @Autowired
     val brandRepository: BrandRepository
 ): BehaviorSpec({
 
-    beforeEach {
+    beforeSpec {
+        brandRepository.save(Brand(name = "A"))
+    }
+
+    afterSpec {
         brandRepository.deleteAll()
     }
 
     Given("a brand repository") {
 
         When("findByName is called with an existing brand name") {
-            brandRepository.save(Brand(name = "A"))
-
             Then("it should find the brand by name") {
                 val foundBrand = brandRepository.findByName("A")
 

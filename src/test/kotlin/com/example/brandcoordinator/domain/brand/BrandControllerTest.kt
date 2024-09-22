@@ -5,7 +5,6 @@ import com.example.brandcoordinator.domain.brand.dto.BrandPostRequest
 import com.example.brandcoordinator.domain.brand.model.Brand
 import com.fasterxml.jackson.databind.ObjectMapper
 import io.kotest.core.spec.style.BehaviorSpec
-import jakarta.transaction.Transactional
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc
 import org.springframework.boot.test.context.SpringBootTest
@@ -18,6 +17,7 @@ import org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers.content
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers.status
+import org.springframework.transaction.annotation.Transactional
 
 
 @SpringBootTest
@@ -35,6 +35,10 @@ class BrandControllerTest(
     beforeSpec {
         brandRepository.save(Brand(name = "A"))
         brandRepository.save(Brand(name = "B"))
+    }
+
+    afterSpec {
+        brandRepository.deleteAll()
     }
 
     Given("a brand API") {
