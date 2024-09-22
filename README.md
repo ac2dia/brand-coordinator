@@ -30,7 +30,7 @@
 
 ### Run
 ```
-./gradlew bootRun --args='--spring.profiles.active=local
+./gradlew bootRun --args='--spring.profiles.active=local'
 ```
 
 ## 기타 추가 정보
