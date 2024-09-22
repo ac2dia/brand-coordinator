@@ -1,6 +1,7 @@
 package com.example.brandcoordinator.domain.product
 
-import com.example.brandcoordinator.domain.product.dto.CategoryPricingSummaryResponse
+import com.example.brandcoordinator.domain.product.dto.BrandProductSummaryResponse
+import com.example.brandcoordinator.domain.product.dto.CategoryBrandProductSummaryResponse
 import com.example.brandcoordinator.domain.product.dto.ProductPatchRequest
 import com.example.brandcoordinator.domain.product.dto.ProductPostRequest
 import com.example.brandcoordinator.domain.product.dto.ProductResponse
@@ -49,12 +50,19 @@ class ProductController(
         return ResponseEntity.noContent().build()
     }
 
-    @GetMapping("/api/v1/get-price-summary-by-category/{name}")
-    fun getPriceSummaryByCategory(
-        @PathVariable("name") name: String,
-    ): ResponseEntity<CategoryPricingSummaryResponse> {
+    @GetMapping("/api/v1/get-summary-by-category/{category}")
+    fun getSummaryByCategory(
+        @PathVariable("category") category: String,
+    ): ResponseEntity<CategoryBrandProductSummaryResponse> {
         val categoryPriceSummaryResponse =
-            this.productService.findMaxAndMinProductsByCategory(category = name)
+            this.productService.findMaxAndMinProductsByCategory(category = category)
         return ResponseEntity.ok(categoryPriceSummaryResponse)
+    }
+
+    @GetMapping("/api/v1/get-summary-each-category")
+    fun getSummaryEachCategory(): ResponseEntity<BrandProductSummaryResponse> {
+        val brandProductSummaryResponse =
+            this.productService.findLowestPriceProductsEachCategories()
+        return ResponseEntity.ok(brandProductSummaryResponse)
     }
 }
