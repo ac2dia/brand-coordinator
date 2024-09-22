@@ -21,4 +21,20 @@ class Product(
     var brand: Brand,
     @Column(nullable = false)
     var price: Int,
-)
+) {
+    fun update(
+        category: String?,
+        brand: Brand?,
+        price: Int?,
+    ) {
+        category?.let {
+            this.category = it
+        }
+        brand?.let {
+            this.brand = it
+        }
+        price?.let {
+            this.price = it
+        }
+    }
+}
