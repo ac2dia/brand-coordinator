@@ -2,6 +2,7 @@ package com.example.brandcoordinator.domain.product
 
 import com.example.brandcoordinator.domain.brand.BrandRepository
 import com.example.brandcoordinator.domain.brand.model.Brand
+import com.example.brandcoordinator.domain.product.dto.CategoryPricingSummaryResponse
 import com.example.brandcoordinator.domain.product.dto.ProductPatchRequest
 import com.example.brandcoordinator.domain.product.dto.ProductPostRequest
 import com.example.brandcoordinator.domain.product.dto.ProductResponse
@@ -49,6 +50,19 @@ class ProductServiceImpl(
     override fun delete(id: Long) {
         val product = findById(id = id)
         this.productRepository.delete(product)
+    }
+
+    override fun findMaxAndMinProductsByCategory(category: String): CategoryPricingSummaryResponse {
+        val products = this.productRepository.findByCategory(category = category)
+            .ifEmpty { throw IllegalArgumentException("") }
+
+        val maxPriceProduct = products.maxBy { it.price }
+        val minPriceProduct = products.minBy { it.price }
+
+        return CategoryPricingSummaryResponse.from(
+            minimumPriceProduct = minPriceProduct,
+            maximumPriceProduct = maxPriceProduct,
+        )
     }
 
     private fun findById(id: Long): Product =

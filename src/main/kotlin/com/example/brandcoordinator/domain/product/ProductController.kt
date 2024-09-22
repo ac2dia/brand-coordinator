@@ -1,5 +1,6 @@
 package com.example.brandcoordinator.domain.product
 
+import com.example.brandcoordinator.domain.product.dto.CategoryPricingSummaryResponse
 import com.example.brandcoordinator.domain.product.dto.ProductPatchRequest
 import com.example.brandcoordinator.domain.product.dto.ProductPostRequest
 import com.example.brandcoordinator.domain.product.dto.ProductResponse
@@ -46,5 +47,14 @@ class ProductController(
     ): ResponseEntity<Void> {
         this.productService.delete(id = id)
         return ResponseEntity.noContent().build()
+    }
+
+    @GetMapping("/api/v1/get-price-summary-by-category/{name}")
+    fun getPriceSummaryByCategory(
+        @PathVariable("name") name: String,
+    ): ResponseEntity<CategoryPricingSummaryResponse> {
+        val categoryPriceSummaryResponse =
+            this.productService.findMaxAndMinProductsByCategory(category = name)
+        return ResponseEntity.ok(categoryPriceSummaryResponse)
     }
 }
