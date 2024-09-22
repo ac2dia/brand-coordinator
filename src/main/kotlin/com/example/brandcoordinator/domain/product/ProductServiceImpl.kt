@@ -65,7 +65,7 @@ class ProductServiceImpl(
         val minPrice = products.minOf { it.price }
         val minPriceProducts = products.filter { it.price == minPrice }
 
-        return CategoryPricingSummaryResponse.from(
+        return CategoryBrandProductSummaryResponse.from(
             minimumPriceProducts = maxPriceProducts,
             maximumPriceProducts = minPriceProducts,
         )
