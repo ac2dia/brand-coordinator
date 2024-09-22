@@ -7,22 +7,26 @@ import com.example.brandcoordinator.domain.brand.model.Brand
 import com.example.brandcoordinator.domain.product.ProductRepository
 import org.springframework.data.crossstore.ChangeSetPersister.NotFoundException
 import org.springframework.stereotype.Service
+import org.springframework.transaction.annotation.Transactional
 
 @Service
 class BrandServiceImpl(
     private val brandRepository: BrandRepository,
     private val productRepository: ProductRepository,
 ) : BrandService {
+    @Transactional(readOnly = true)
     override fun findAll(): List<BrandResponse> {
         val brands = this.brandRepository.findAll()
         return brands.map { BrandResponse.from(brand = it) }
     }
 
+    @Transactional
     override fun save(brandPostRequest: BrandPostRequest) {
         val brand = Brand.from(brandPostRequest = brandPostRequest)
         this.brandRepository.save(brand)
     }
 
+    @Transactional
     override fun update(
         id: Long,
         brandPatchRequest: BrandPatchRequest
@@ -34,6 +38,7 @@ class BrandServiceImpl(
         return BrandResponse.from(brand = brand)
     }
 
+    @Transactional
     override fun delete(id: Long) {
         if(this.productRepository.findByBrandId(brandId = id).isNotEmpty()) {
             throw IllegalArgumentException("")

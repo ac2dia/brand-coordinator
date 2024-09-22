@@ -46,6 +46,9 @@ logging:
 
 ---
 spring:
+  config:
+    activate:
+      on-profile: local
   datasource:
     driver-class-name: org.h2.Driver
     url: jdbc:h2:mem:testdb
@@ -61,3 +64,24 @@ spring:
   sql:
     init:
       mode: always
+
+---
+spring:
+  config:
+    activate:
+      on-profile: test
+  datasource:
+    driver-class-name: org.h2.Driver
+    url: jdbc:h2:mem:testdb
+    username: sa
+    password:
+  jpa:
+    hibernate:
+      ddl-auto: update
+    properties:
+      hibernate:
+        show_sql: true
+        format_sql: true
+  sql:
+    init:
+      mode: never

@@ -27,9 +27,16 @@ dependencies {
     implementation("com.fasterxml.jackson.module:jackson-module-kotlin")
     implementation("org.jetbrains.kotlin:kotlin-reflect")
     runtimeOnly("com.h2database:h2")
-    testImplementation("org.springframework.boot:spring-boot-starter-test")
+    testImplementation("org.springframework.boot:spring-boot-starter-test") {
+        exclude(group = "org.junit.vintage", module = "junit-vintage-engine")
+    }
     testImplementation("org.jetbrains.kotlin:kotlin-test-junit5")
-    testRuntimeOnly("org.junit.platform:junit-platform-launcher")
+    testImplementation("io.kotest:kotest-runner-junit5-jvm:5.5.5")
+    testImplementation("io.kotest:kotest-runner-junit5:5.5.5")
+    testImplementation("io.kotest:kotest-assertions-core:5.5.5")
+    testImplementation("io.kotest.extensions:kotest-extensions-spring:1.1.2")
+    testImplementation("io.mockk:mockk:1.13.12")
+    testImplementation("com.ninja-squad:springmockk:4.0.2")
 }
 
 kotlin {
@@ -40,4 +47,5 @@ kotlin {
 
 tasks.withType<Test> {
     useJUnitPlatform()
+    systemProperty("spring.profiles.active", "test")
 }
