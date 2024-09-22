@@ -59,12 +59,15 @@ class ProductServiceImpl(
         val products = this.productRepository.findByCategory(category = category)
             .ifEmpty { throw IllegalArgumentException("") }
 
-        val maxPriceProduct = products.maxBy { it.price }
-        val minPriceProduct = products.minBy { it.price }
+        val maxPrice = products.maxOf { it.price }
+        val maxPriceProducts = products.filter { it.price == maxPrice }
+
+        val minPrice = products.minOf { it.price }
+        val minPriceProducts = products.filter { it.price == minPrice }
 
         return CategoryPricingSummaryResponse.from(
-            minimumPriceProduct = minPriceProduct,
-            maximumPriceProduct = maxPriceProduct,
+            minimumPriceProducts = maxPriceProducts,
+            maximumPriceProducts = minPriceProducts,
         )
     }
 

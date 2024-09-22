@@ -261,15 +261,19 @@ components:
           type: string
           example: 상의
         minimum:
-          $ref: '#/components/schemas/BrandPriceDetails'
-          example:
-            brand_name: C
-            price: 10000
+          type: array
+          items:
+            $ref: '#/components/schemas/BrandPriceDetails'
+            example:
+              brand_name: C
+              price: 10000
         maximum:
-          $ref: '#/components/schemas/BrandPriceDetails'
-          example:
-            brand_name: I
-            price: 11400
+          type: array
+          items:
+            $ref: '#/components/schemas/BrandPriceDetails'
+            example:
+              brand_name: I
+              price: 11400
     BrandPriceDetails:
       type: object
       properties:
