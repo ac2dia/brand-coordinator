@@ -15,11 +15,10 @@ class Brand(
     var name: String,
 ) {
     companion object {
-        fun from(brandPostRequest: BrandPostRequest): Brand {
-            return Brand(
+        fun from(brandPostRequest: BrandPostRequest): Brand =
+            Brand(
                 name = brandPostRequest.name,
             )
-        }
     }
 
     fun update(name: String) {
