@@ -20,5 +20,18 @@ interface ProductRepository : JpaRepository<Product, Long> {
         "SELECT p FROM Product p JOIN FETCH p.brand b " +
             "WHERE p.price = (SELECT MIN(p2.price) FROM Product p2 WHERE p2.category = p.category)"
     )
-    fun findCategoryWithLowestPrice(): List<Product>
+    fun findProductsWithLowestPrice(): List<Product>
+
+    @Query(
+        "SELECT p FROM Product p " +
+            "JOIN p.brand b " +
+            "WHERE b.id = (" +
+            "  SELECT b2.id FROM Product p2 " +
+            "  JOIN p2.brand b2 " +
+            "  GROUP BY b2.id " +
+            "  ORDER BY SUM(p2.price) ASC " +
+            "  LIMIT 1" +
+            ")"
+    )
+    fun findProductsByBrandWithLowestTotalPrice(): List<Product>
 }

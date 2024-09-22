@@ -4,6 +4,7 @@ import com.example.brandcoordinator.domain.brand.BrandRepository
 import com.example.brandcoordinator.domain.brand.model.Brand
 import com.example.brandcoordinator.domain.product.dto.BrandProductSummaryResponse
 import com.example.brandcoordinator.domain.product.dto.CategoryBrandProductSummaryResponse
+import com.example.brandcoordinator.domain.product.dto.LowestBrandProductSummaryResponse
 import com.example.brandcoordinator.domain.product.dto.ProductPatchRequest
 import com.example.brandcoordinator.domain.product.dto.ProductPostRequest
 import com.example.brandcoordinator.domain.product.dto.ProductResponse
@@ -73,7 +74,7 @@ class ProductServiceImpl(
     }
 
     override fun findLowestPriceProductsEachCategories(): BrandProductSummaryResponse {
-        val products = this.productRepository.findCategoryWithLowestPrice()
+        val products = this.productRepository.findProductsWithLowestPrice()
         val filteredProducts = products
             .groupBy { it.category }
             .map { (_, productList) ->
@@ -81,6 +82,11 @@ class ProductServiceImpl(
             }
             .filterNotNull()
         return BrandProductSummaryResponse.from(products = filteredProducts)
+    }
+
+    override fun findLowestPriceProductsWithBrand(): LowestBrandProductSummaryResponse {
+        val products = this.productRepository.findProductsByBrandWithLowestTotalPrice()
+        return LowestBrandProductSummaryResponse.from(products = products)
     }
 
     private fun findById(id: Long): Product =
