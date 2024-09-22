@@ -4,12 +4,14 @@ import com.example.brandcoordinator.domain.brand.dto.BrandPatchRequest
 import com.example.brandcoordinator.domain.brand.dto.BrandPostRequest
 import com.example.brandcoordinator.domain.brand.dto.BrandResponse
 import com.example.brandcoordinator.domain.brand.model.Brand
+import com.example.brandcoordinator.domain.product.ProductRepository
 import org.springframework.data.crossstore.ChangeSetPersister.NotFoundException
 import org.springframework.stereotype.Service
 
 @Service
 class BrandServiceImpl(
     private val brandRepository: BrandRepository,
+    private val productRepository: ProductRepository,
 ) : BrandService {
     override fun findAll(): List<BrandResponse> {
         val brands = this.brandRepository.findAll()
@@ -30,6 +32,10 @@ class BrandServiceImpl(
     }
 
     override fun delete(id: Long) {
+        if(this.productRepository.findByBrandId(brandId = id).isNotEmpty()) {
+            throw IllegalArgumentException("")
+        }
+
         val brand = findById(id = id)
         this.brandRepository.delete(brand)
     }
