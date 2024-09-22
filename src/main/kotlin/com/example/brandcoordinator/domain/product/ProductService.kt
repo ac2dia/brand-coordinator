@@ -1,5 +1,6 @@
 package com.example.brandcoordinator.domain.product
 
+import com.example.brandcoordinator.domain.product.dto.BrandProductSummaryResponse
 import com.example.brandcoordinator.domain.product.dto.CategoryBrandProductSummaryResponse
 import com.example.brandcoordinator.domain.product.dto.ProductPatchRequest
 import com.example.brandcoordinator.domain.product.dto.ProductPostRequest
@@ -11,4 +12,5 @@ interface ProductService {
     fun update(id: Long, productPatchRequest: ProductPatchRequest): ProductResponse
     fun delete(id: Long)
     fun findMaxAndMinProductsByCategory(category: String): CategoryBrandProductSummaryResponse
+    fun findLowestPriceProductsEachCategories(): BrandProductSummaryResponse
 }
