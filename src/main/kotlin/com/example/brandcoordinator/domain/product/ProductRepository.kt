@@ -8,6 +8,9 @@ import org.springframework.stereotype.Repository
 
 @Repository
 interface ProductRepository : JpaRepository<Product, Long> {
+    @Query("SELECT p FROM Product p JOIN FETCH p.brand")
+    override fun findAll(): List<Product>
+
     fun findByBrandId(brandId: Long): List<Product>
 
     @Query("SELECT p FROM Product p JOIN FETCH p.brand WHERE p.category = :category")
