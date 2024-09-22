@@ -22,14 +22,15 @@ class BrandServiceImpl(
     }
 
     override fun update(id: Long, brandPatchRequest: BrandPatchRequest): BrandResponse {
-        val brand = findById(id)
+        val brand = findById(id = id)
         brand.update(name = brandPatchRequest.name)
+        this.brandRepository.save(brand)
 
         return BrandResponse.from(brand = brand)
     }
 
     override fun delete(id: Long) {
-        val brand = findById(id)
+        val brand = findById(id = id)
         this.brandRepository.delete(brand)
     }
 
