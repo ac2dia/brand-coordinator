@@ -11,7 +11,7 @@ import jakarta.persistence.Id
 class Brand(
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     val id: Long = 0,
-    @Column(nullable = false)
+    @Column(nullable = false, unique = true)
     var name: String,
 ) {
     companion object {
