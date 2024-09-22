@@ -2,7 +2,8 @@ package com.example.brandcoordinator.domain.product
 
 import com.example.brandcoordinator.domain.brand.BrandRepository
 import com.example.brandcoordinator.domain.brand.model.Brand
-import com.example.brandcoordinator.domain.product.dto.CategoryPricingSummaryResponse
+import com.example.brandcoordinator.domain.product.dto.BrandProductSummaryResponse
+import com.example.brandcoordinator.domain.product.dto.CategoryBrandProductSummaryResponse
 import com.example.brandcoordinator.domain.product.dto.ProductPatchRequest
 import com.example.brandcoordinator.domain.product.dto.ProductPostRequest
 import com.example.brandcoordinator.domain.product.dto.ProductResponse
@@ -55,7 +56,7 @@ class ProductServiceImpl(
         this.productRepository.delete(product)
     }
 
-    override fun findMaxAndMinProductsByCategory(category: String): CategoryPricingSummaryResponse {
+    override fun findMaxAndMinProductsByCategory(category: String): CategoryBrandProductSummaryResponse {
         val products = this.productRepository.findByCategory(category = category)
             .ifEmpty { throw IllegalArgumentException("") }
 
@@ -65,10 +66,21 @@ class ProductServiceImpl(
         val minPrice = products.minOf { it.price }
         val minPriceProducts = products.filter { it.price == minPrice }
 
-        return CategoryPricingSummaryResponse.from(
+        return CategoryBrandProductSummaryResponse.from(
             minimumPriceProducts = maxPriceProducts,
             maximumPriceProducts = minPriceProducts,
         )
+    }
+
+    override fun findLowestPriceProductsEachCategories(): BrandProductSummaryResponse {
+        val products = this.productRepository.findCategoryWithLowestPrice()
+        val filteredProducts = products
+            .groupBy { it.category }
+            .map { (_, productList) ->
+                productList.maxWithOrNull(compareBy({ it.brand.name }))
+            }
+            .filterNotNull()
+        return BrandProductSummaryResponse.from(products = filteredProducts)
     }
 
     private fun findById(id: Long): Product =

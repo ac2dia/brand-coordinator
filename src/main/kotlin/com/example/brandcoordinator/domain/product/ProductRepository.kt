@@ -15,4 +15,10 @@ interface ProductRepository : JpaRepository<Product, Long> {
 
     @Query("SELECT p FROM Product p JOIN FETCH p.brand WHERE p.category = :category")
     fun findByCategory(@Param("category") category: String): List<Product>
+
+    @Query(
+        "SELECT p FROM Product p JOIN FETCH p.brand b " +
+            "WHERE p.price = (SELECT MIN(p2.price) FROM Product p2 WHERE p2.category = p.category)"
+    )
+    fun findCategoryWithLowestPrice(): List<Product>
 }

@@ -2,31 +2,32 @@ package com.example.brandcoordinator.domain.product.dto
 
 import com.example.brandcoordinator.domain.product.model.Product
 
-data class CategoryPricingSummaryResponse(
+data class CategoryBrandProductSummaryResponse(
     val category: String,
-    val minimum: List<BrandPriceDetails>,
-    val maximum: List<BrandPriceDetails>,
+    val minimum: List<BrandProduct>,
+    val maximum: List<BrandProduct>,
 ) {
     companion object {
         fun from(
             minimumPriceProducts: List<Product>,
             maximumPriceProducts: List<Product>
-        ): CategoryPricingSummaryResponse {
-            return CategoryPricingSummaryResponse(
+        ): CategoryBrandProductSummaryResponse =
+            CategoryBrandProductSummaryResponse(
                 category = minimumPriceProducts[0].category,
                 minimum = minimumPriceProducts.map {
-                    BrandPriceDetails(
+                    BrandProduct(
+                        category = null,
                         brandName = it.brand.name,
                         price = it.price,
                     )
                 },
                 maximum = maximumPriceProducts.map {
-                    BrandPriceDetails(
+                    BrandProduct(
+                        category = null,
                         brandName = it.brand.name,
                         price = it.price,
                     )
                 },
             )
-        }
     }
 }

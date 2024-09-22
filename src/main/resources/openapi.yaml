@@ -13,19 +13,32 @@ tags:
   - name: brand
     description: everything about brand
 paths:
-  '/api/v1/get-price-summary-by-category':
+  '/api/v1/get-summary-by-category':
     get:
       tags:
         - summary
-      summary: Get price summary by category
-      description: Get price summary by category
+      summary: Get summary by category
+      description: Get summary by category
       responses:
         '200':
           description: Successful operation
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/CategoryPricingSummaryResponse'
+                $ref: '#/components/schemas/CategoryBrandProductSummaryResponse'
+  '/api/v1/get-summary-each-category':
+    get:
+      tags:
+        - summary
+      summary: Get summary each category
+      description: Get summary each category
+      responses:
+        '200':
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BrandProductSummaryResponse'
   '/api/v1/products':
     get:
       tags:
@@ -254,7 +267,7 @@ components:
         name:
           type: string
           example: B
-    CategoryPricingSummaryResponse:
+    CategoryBrandProductSummaryResponse:
       type: object
       properties:
         category:
@@ -263,20 +276,40 @@ components:
         minimum:
           type: array
           items:
-            $ref: '#/components/schemas/BrandPriceDetails'
-            example:
-              brand_name: C
-              price: 10000
+            $ref: '#/components/schemas/BrandProduct'
+          example:
+            - {brand_name: C, price: 1000}
         maximum:
           type: array
           items:
-            $ref: '#/components/schemas/BrandPriceDetails'
-            example:
-              brand_name: I
-              price: 11400
-    BrandPriceDetails:
+            $ref: '#/components/schemas/BrandProduct'
+          example:
+            - {brand_name: I, price: 11400}
+    BrandProductSummaryResponse:
       type: object
       properties:
+        amount:
+          type: integer
+          example: 34100
+        products:
+          type: array
+          items:
+            $ref: '#/components/schemas/BrandProduct'
+          example:
+            - {category: 스니커즈, brand_name: G, price: 9000}
+            - {category: 아우터, brand_name: E, price: 5000}
+            - {category: 바지, brand_name: D, price: 3000}
+            - {category: 스니커즈, brand_name: G, price: 9000}
+            - {category: 가방, brand_name: A, price: 2000}
+            - {category: 모자, brand_name: D, price: 1500}
+            - {category: 양말, brand_name: I, price: 1700}
+            - {category: 액세서리, brand_name: F, price: 1900}
+    BrandProduct:
+      type: object
+      properties:
+        category:
+          type: string
+          example: 상의
         brand_name:
           type: string
           example: A
