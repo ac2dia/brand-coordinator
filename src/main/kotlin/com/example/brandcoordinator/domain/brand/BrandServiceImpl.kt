@@ -23,7 +23,10 @@ class BrandServiceImpl(
         this.brandRepository.save(brand)
     }
 
-    override fun update(id: Long, brandPatchRequest: BrandPatchRequest): BrandResponse {
+    override fun update(
+        id: Long,
+        brandPatchRequest: BrandPatchRequest
+    ): BrandResponse {
         val brand = findById(id = id)
         brand.update(name = brandPatchRequest.name)
         this.brandRepository.save(brand)
@@ -40,7 +43,6 @@ class BrandServiceImpl(
         this.brandRepository.delete(brand)
     }
 
-    private fun findById(id: Long): Brand {
-        return this.brandRepository.findById(id).orElseThrow { NotFoundException() }
-    }
+    private fun findById(id: Long): Brand =
+        this.brandRepository.findById(id).orElseThrow { NotFoundException() }
 }

@@ -31,7 +31,10 @@ class ProductServiceImpl(
         this.productRepository.save(product)
     }
 
-    override fun update(id: Long, productPatchRequest: ProductPatchRequest): ProductResponse {
+    override fun update(
+        id: Long,
+        productPatchRequest: ProductPatchRequest
+    ): ProductResponse {
         val product = this.findById(id = id)
 
         val brand = productPatchRequest.brandName?.let {
