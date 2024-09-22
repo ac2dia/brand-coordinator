@@ -7,7 +7,6 @@ import com.example.brandcoordinator.domain.product.dto.ProductPostRequest
 import com.example.brandcoordinator.domain.product.model.Product
 import com.fasterxml.jackson.databind.ObjectMapper
 import io.kotest.core.spec.style.BehaviorSpec
-import jakarta.transaction.Transactional
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc
 import org.springframework.boot.test.context.SpringBootTest
@@ -20,6 +19,7 @@ import org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers.content
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers.status
+import org.springframework.transaction.annotation.Transactional
 
 @SpringBootTest
 @AutoConfigureMockMvc
@@ -43,6 +43,11 @@ class ProductControllerTest(
         val bBrand = brandRepository.save(Brand(id = 2, name = "B"))
         productRepository.save(Product(id = 3L, category = "상의", brand = bBrand, price = 6000))
         productRepository.save(Product(id = 4L, category = "하의", brand = bBrand, price = 11000))
+    }
+
+    afterSpec {
+        productRepository.deleteAll()
+        brandRepository.deleteAll()
     }
 
     Given("a product API") {
