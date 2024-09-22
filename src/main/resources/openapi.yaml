@@ -6,11 +6,26 @@ info:
 servers:
   - url: http://localhost:8080
 tags:
+  - name: summary
+    description: everything about price summary
   - name: product
     description: everything about product
   - name: brand
     description: everything about brand
 paths:
+  '/api/v1/get-price-summary-by-category':
+    get:
+      tags:
+        - summary
+      summary: Get price summary by category
+      description: Get price summary by category
+      responses:
+        '200':
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CategoryPricingSummaryResponse'
   '/api/v1/products':
     get:
       tags:
@@ -239,3 +254,28 @@ components:
         name:
           type: string
           example: B
+    CategoryPricingSummaryResponse:
+      type: object
+      properties:
+        category:
+          type: string
+          example: 상의
+        minimum:
+          $ref: '#/components/schemas/BrandPriceDetails'
+          example:
+            brand_name: C
+            price: 10000
+        maximum:
+          $ref: '#/components/schemas/BrandPriceDetails'
+          example:
+            brand_name: I
+            price: 11400
+    BrandPriceDetails:
+      type: object
+      properties:
+        brand_name:
+          type: string
+          example: A
+        price:
+          type: integer
+          example: 11200
