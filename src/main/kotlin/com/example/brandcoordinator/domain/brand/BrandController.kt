@@ -3,6 +3,7 @@ package com.example.brandcoordinator.domain.brand
 import com.example.brandcoordinator.domain.brand.dto.BrandPatchRequest
 import com.example.brandcoordinator.domain.brand.dto.BrandPostRequest
 import com.example.brandcoordinator.domain.brand.dto.BrandResponse
+import jakarta.validation.Valid
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.DeleteMapping
 import org.springframework.web.bind.annotation.GetMapping
@@ -23,7 +24,7 @@ class BrandController(
     }
 
     @PostMapping("/api/v1/brands")
-    fun save(@RequestBody brandPostRequest: BrandPostRequest): ResponseEntity<Void> {
+    fun save(@Valid @RequestBody brandPostRequest: BrandPostRequest): ResponseEntity<Void> {
         this.brandService.save(brandPostRequest = brandPostRequest)
         return ResponseEntity.noContent().build()
     }
@@ -31,7 +32,7 @@ class BrandController(
     @PatchMapping("/api/v1/brands/{id}")
     fun update(
         @PathVariable("id") id: Long,
-        @RequestBody brandPatchRequest: BrandPatchRequest
+        @Valid @RequestBody brandPatchRequest: BrandPatchRequest
     ): ResponseEntity<BrandResponse> {
         val modifiedBrand = this.brandService.update(
             id = id,
