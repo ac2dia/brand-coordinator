@@ -84,7 +84,29 @@ paths:
         '200':
           description: Successful operation
         '400':
-          description: Invalid request
+          description: Bad request error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ValidationErrorResponse'
+              example:
+                ValidationError:
+                  summary: Validation error
+                  value:
+                    category: 'category is required'
+                    brandName: 'brandName is required'
+                    price: 'price must be positive or zero'
+        '404':
+          description: Not found error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CommonErrorResponse'
+              example:
+                NotFoundException:
+                  summary: Product not found by name
+                  value:
+                    message: '상의 Product is not found by name'
   '/api/v1/products/{id}':
     patch:
       tags:
@@ -113,8 +135,28 @@ paths:
                 type: array
                 items:
                   $ref: '#/components/schemas/Product'
+        '400':
+          description: Bad request error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ValidationErrorResponse'
+              example:
+                ValidationError:
+                  summary: Validation error
+                  value:
+                    price: 'price must be positive or zero'
         '404':
-          description: Not found
+          description: Not found error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CommonErrorResponse'
+              example:
+                NotFoundException:
+                  summary: Product not found by id
+                  value:
+                    message: '1 Product is not found by id'
     delete:
       tags:
         - product
@@ -131,7 +173,16 @@ paths:
         '200':
           description: Successful operation
         '404':
-          description: Not found
+          description: Not found error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CommonErrorResponse'
+              example:
+                NotFoundException:
+                  summary: Product not found by id
+                  value:
+                    message: '1 Product is not found by id'
   '/api/v1/brands':
     get:
       tags:
@@ -162,7 +213,22 @@ paths:
         '200':
           description: Successful operation
         '400':
-          description: Invalid request
+          description: Bad request error
+          content:
+            application/json:
+              schema:
+                oneOf:
+                  - $ref: '#/components/schemas/ValidationErrorResponse'
+                  - $ref: '#/components/schemas/CommonErrorResponse'
+              examples:
+                ValidationError:
+                  summary: Validation error
+                  value:
+                    name: 'name is required'
+                AlreadyExistBrandException:
+                  summary: Already exist brand exception
+                  value:
+                    message: 'Brand with name 'A' already exists'
   '/api/v1/brands/{id}':
     patch:
       tags:
@@ -189,8 +255,34 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Brand'
+        '400':
+          description: Bad request error
+          content:
+            application/json:
+              schema:
+                oneOf:
+                  - $ref: '#/components/schemas/ValidationErrorResponse'
+                  - $ref: '#/components/schemas/CommonErrorResponse'
+              examples:
+                ValidationError:
+                  summary: Validation error
+                  value:
+                    name: 'name is required'
+                AlreadyExistBrandException:
+                  summary: Already exist brand exception
+                  value:
+                    message: 'Brand with name 'A' already exists'
         '404':
-          description: Not found
+          description: Not found error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CommonErrorResponse'
+              example:
+                NotFoundException:
+                  summary: Product not found by name
+                  value:
+                    message: '1 Brand is not found by id'
     delete:
       tags:
         - brand
@@ -206,8 +298,33 @@ paths:
       responses:
         '200':
           description: Successful operation
+        '400':
+          description: Bad request error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ValidationErrorResponse'
+                $ref: '#/components/schemas/CommonErrorResponse'
+              example:
+                ValidationError:
+                  summary: Validation error
+                  value:
+                    price: 'price must be positive or zero'
+                BrandInUseByProductException:
+                  summary: Brand is used by product
+                  value:
+                    message: '1 Brand is used by product'
         '404':
-          description: Not found
+          description: Not found error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CommonErrorResponse'
+              example:
+                NotFoundException:
+                  summary: Product not found by name
+                  value:
+                    message: '1 Brand is not found by id'
 components:
   schemas:
     Product:
@@ -362,3 +479,19 @@ components:
         price:
           type: integer
           example: 11200
+    CommonErrorResponse:
+      type: object
+      required:
+        - message
+      properties:
+        message:
+          type: string
+          example: A Brand is used by product
+    ValidationErrorResponse:
+      type: object
+      additionalProperties:
+        type: string
+      example:
+        category: 'category is required'
+        brandName: 'brandName is required'
+        price: 'price must be positive or zero'

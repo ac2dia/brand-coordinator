@@ -55,6 +55,22 @@ class BrandControllerTest(
             }
         }
 
+        When("POST /api/v1/brands is called with invalid request") {
+            val brandPostRequest = BrandPostRequest(name = "")
+
+            Then("it shouldn't save the new brand") {
+                val requestBody = objectMapper.writeValueAsString(brandPostRequest)
+
+                mockMvc.perform(
+                    post("/api/v1/brands")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(requestBody)
+                )
+                    .andExpect(status().isBadRequest)
+                    .andExpect(jsonPath("$.name").value("name is required"))
+            }
+        }
+
         When("POST /api/v1/brands is called with valid request") {
             val brandPostRequest = BrandPostRequest(name = "NewBrand")
 
@@ -67,6 +83,21 @@ class BrandControllerTest(
                         .content(requestBody)
                 )
                     .andExpect(status().isNoContent)
+            }
+        }
+
+        When("PATCH /api/v1/brands/{id} is called with invalid request") {
+            val brandPatchRequest = BrandPatchRequest(name = "")
+            val requestBody = objectMapper.writeValueAsString(brandPatchRequest)
+
+            Then("it should update the brand") {
+                mockMvc.perform(
+                    patch("/api/v1/brands/{id}", 1L)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(requestBody)
+                )
+                    .andExpect(status().isBadRequest)
+                    .andExpect(jsonPath("$.name").value("name is required"))
             }
         }
 
