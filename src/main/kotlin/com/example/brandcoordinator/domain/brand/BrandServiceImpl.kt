@@ -1,11 +1,14 @@
 package com.example.brandcoordinator.domain.brand
 
+import com.example.brandcoordinator.common.error.NotFoundException
 import com.example.brandcoordinator.domain.brand.dto.BrandPatchRequest
 import com.example.brandcoordinator.domain.brand.dto.BrandPostRequest
 import com.example.brandcoordinator.domain.brand.dto.BrandResponse
+import com.example.brandcoordinator.domain.brand.error.AlreadyExistBrandException
+import com.example.brandcoordinator.domain.brand.error.BrandIsUsedByProductException
 import com.example.brandcoordinator.domain.brand.model.Brand
 import com.example.brandcoordinator.domain.product.ProductRepository
-import org.springframework.data.crossstore.ChangeSetPersister.NotFoundException
+
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 
@@ -22,6 +25,8 @@ class BrandServiceImpl(
 
     @Transactional
     override fun save(brandPostRequest: BrandPostRequest) {
+        this.validateBrandNameIsUnique(name = brandPostRequest.name)
+        
         val brand = Brand.from(brandPostRequest = brandPostRequest)
         this.brandRepository.save(brand)
     }
@@ -31,6 +36,8 @@ class BrandServiceImpl(
         id: Long,
         brandPatchRequest: BrandPatchRequest
     ): BrandResponse {
+        this.validateBrandNameIsUnique(name = brandPatchRequest.name)
+
         val brand = findById(id = id)
         brand.update(name = brandPatchRequest.name)
         this.brandRepository.save(brand)
@@ -40,8 +47,9 @@ class BrandServiceImpl(
 
     @Transactional
     override fun delete(id: Long) {
-        if(this.productRepository.findByBrandId(brandId = id).isNotEmpty()) {
-            throw IllegalArgumentException("")
+        val isBrandUsedByProduct = this.productRepository.findByBrandId(brandId = id).isNotEmpty()
+        if(isBrandUsedByProduct) {
+            throw BrandIsUsedByProductException("$id Brand is used by product")
         }
 
         val brand = findById(id = id)
@@ -49,5 +57,11 @@ class BrandServiceImpl(
     }
 
     private fun findById(id: Long): Brand =
-        this.brandRepository.findById(id).orElseThrow { NotFoundException() }
+        this.brandRepository.findById(id).orElseThrow { NotFoundException("$id Brand is not found by id") }
+
+    private fun validateBrandNameIsUnique(name: String) {
+        if (brandRepository.existsByName(name)) {
+            throw AlreadyExistBrandException("Brand with name $name already exists")
+        }
+    }
 }

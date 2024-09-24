@@ -8,4 +8,5 @@ import java.util.Optional
 @Repository
 interface BrandRepository : JpaRepository<Brand, Long> {
     fun findByName(name: String): Optional<Brand>
+    fun existsByName(name: String): Boolean
 }
