@@ -228,7 +228,7 @@ paths:
                 AlreadyExistBrandException:
                   summary: Already exist brand exception
                   value:
-                    message: 'Brand with name 'A' already exists'
+                    message: 'Brand with name A already exists'
   '/api/v1/brands/{id}':
     patch:
       tags:
@@ -271,7 +271,7 @@ paths:
                 AlreadyExistBrandException:
                   summary: Already exist brand exception
                   value:
-                    message: 'Brand with name 'A' already exists'
+                    message: 'Brand with name A already exists'
         '404':
           description: Not found error
           content:
@@ -303,8 +303,9 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/ValidationErrorResponse'
-                $ref: '#/components/schemas/CommonErrorResponse'
+                oneOf:
+                  - $ref: '#/components/schemas/ValidationErrorResponse'
+                  - $ref: '#/components/schemas/CommonErrorResponse'
               example:
                 ValidationError:
                   summary: Validation error
