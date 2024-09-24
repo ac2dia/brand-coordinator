@@ -1,10 +1,12 @@
 package com.example.brandcoordinator.domain.product
 
+import com.example.brandcoordinator.common.error.NotFoundException
 import com.example.brandcoordinator.domain.brand.BrandRepository
 import com.example.brandcoordinator.domain.brand.model.Brand
 import com.example.brandcoordinator.domain.product.dto.ProductPatchRequest
 import com.example.brandcoordinator.domain.product.dto.ProductPostRequest
 import com.example.brandcoordinator.domain.product.model.Product
+import io.kotest.assertions.throwables.shouldThrow
 import io.kotest.core.spec.style.BehaviorSpec
 import io.kotest.matchers.shouldBe
 import io.mockk.Runs
@@ -12,7 +14,7 @@ import io.mockk.every
 import io.mockk.just
 import io.mockk.mockk
 import io.mockk.verify
-import java.util.Optional
+import java.util.*
 
 
 class ProductServiceImplTest : BehaviorSpec({
@@ -68,6 +70,22 @@ class ProductServiceImplTest : BehaviorSpec({
             }
         }
 
+        When("save is called with not exist brand name") {
+            val productPostRequest = ProductPostRequest(
+                category = "모자",
+                brandName = "A",
+                price = 5000
+            )
+            every { brandRepository.findByName("A") } returns Optional.empty()
+            every { productRepository.save(any()) } returns product
+
+            Then("it should throw NotFoundException due to not exist brand name") {
+                shouldThrow<NotFoundException> {
+                    productService.save(productPostRequest)
+                }
+            }
+        }
+
         When("save is called with valid data") {
             val brand = Brand(id = 1L, name = "A")
             val productPostRequest = ProductPostRequest(
@@ -85,7 +103,7 @@ class ProductServiceImplTest : BehaviorSpec({
             }
         }
 
-        When("update is called with valid data") {
+        When("update is called with not exist brand name") {
             val productPatchRequest = ProductPatchRequest(
                 category = "하의",
                 brandName = "A",
@@ -93,7 +111,45 @@ class ProductServiceImplTest : BehaviorSpec({
             )
 
             every { productRepository.findById(1L) } returns Optional.of(product)
-            every { brandRepository.findByName("A") } returns Optional.of(product.brand)
+            every { brandRepository.findByName("A") } returns Optional.empty()
+            every { productRepository.save(any()) } returns product
+
+            Then("it should throw NotFoundException due to not exist brand name") {
+                shouldThrow<NotFoundException> {
+                    productService.update(1L, productPatchRequest)
+                }
+            }
+        }
+
+        When("update is called with not exist product id") {
+            val brand = Brand(id = 1L, name = "A")
+            val productPatchRequest = ProductPatchRequest(
+                category = "하의",
+                brandName = "A",
+                price = 6000
+            )
+
+            every { productRepository.findById(1L) } returns Optional.empty()
+            every { brandRepository.findByName("A") } returns Optional.of(brand)
+            every { productRepository.save(any()) } returns product
+
+            Then("it should throw NotFoundException due to not exist brand name") {
+                shouldThrow<NotFoundException> {
+                    productService.update(1L, productPatchRequest)
+                }
+            }
+        }
+
+        When("update is called with valid data") {
+            val brand = Brand(id = 1L, name = "A")
+            val productPatchRequest = ProductPatchRequest(
+                category = "하의",
+                brandName = "A",
+                price = 6000
+            )
+
+            every { productRepository.findById(1L) } returns Optional.of(product)
+            every { brandRepository.findByName("A") } returns Optional.of(brand)
             every { productRepository.save(any()) } returns product
 
             val result = productService.update(1L, productPatchRequest)
@@ -105,6 +161,18 @@ class ProductServiceImplTest : BehaviorSpec({
                 verify { productRepository.save(any<Product>()) }
             }
         }
+
+        When("delete is called with invalid id") {
+            every { productRepository.findById(1L) } returns Optional.empty()
+            every { productRepository.delete(any()) } just Runs
+
+            Then("it should throw NotFoundException due to not exist product id") {
+                shouldThrow<NotFoundException> {
+                    productService.delete(1L)
+                }
+            }
+        }
+
 
         When("delete is called with valid id") {
             every { productRepository.findById(1L) } returns Optional.of(product)

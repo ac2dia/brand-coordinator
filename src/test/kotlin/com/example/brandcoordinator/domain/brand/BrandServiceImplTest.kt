@@ -2,6 +2,8 @@ package com.example.brandcoordinator.domain.brand
 
 import com.example.brandcoordinator.domain.brand.dto.BrandPatchRequest
 import com.example.brandcoordinator.domain.brand.dto.BrandPostRequest
+import com.example.brandcoordinator.domain.brand.error.AlreadyExistBrandException
+import com.example.brandcoordinator.domain.brand.error.BrandIsUsedByProductException
 import com.example.brandcoordinator.domain.brand.model.Brand
 import com.example.brandcoordinator.domain.product.ProductRepository
 import com.example.brandcoordinator.domain.product.model.Product
@@ -11,7 +13,7 @@ import io.kotest.matchers.shouldBe
 import io.mockk.every
 import io.mockk.mockk
 import io.mockk.verify
-import java.util.Optional
+import java.util.*
 
 
 class BrandServiceImplTest : BehaviorSpec({
@@ -39,9 +41,23 @@ class BrandServiceImplTest : BehaviorSpec({
             }
         }
 
-        When("save is called") {
-            val brandPostRequest = BrandPostRequest(name = "C")
+        When("save is called with same name brand") {
+            val brandPostRequest = BrandPostRequest(name = "A")
 
+            every { brandRepository.existsByName(any()) } returns true
+            every { brandRepository.save(any()) } returns aBrand
+
+            Then("it should throw AlreadyExistBrandException due to same name brand") {
+                shouldThrow<AlreadyExistBrandException> {
+                    brandService.save(brandPostRequest)
+                }
+            }
+        }
+
+        When("save is called") {
+            val brandPostRequest = BrandPostRequest(name = "A")
+
+            every { brandRepository.existsByName(any()) } returns false
             every { brandRepository.save(any()) } returns aBrand
 
             brandService.save(brandPostRequest)
@@ -51,10 +67,26 @@ class BrandServiceImplTest : BehaviorSpec({
             }
         }
 
+        When("update is called with same name brand") {
+            val existingBrand = Brand(id = 3L, name = "C")
+            val patchRequest = BrandPatchRequest(name = "D")
+
+            every { brandRepository.existsByName(any()) } returns true
+            every { brandRepository.findById(3L) } returns Optional.of(existingBrand)
+            every { brandRepository.save(any()) } returns existingBrand
+
+            Then("it should throw AlreadyExistBrandException due to same name brand") {
+                shouldThrow<AlreadyExistBrandException> {
+                    brandService.update(id = 3L, brandPatchRequest = patchRequest)
+                }
+            }
+        }
+
         When("update is called") {
             val existingBrand = Brand(id = 3L, name = "C")
             val patchRequest = BrandPatchRequest(name = "D")
 
+            every { brandRepository.existsByName(any()) } returns false
             every { brandRepository.findById(3L) } returns Optional.of(existingBrand)
             every { brandRepository.save(any()) } returns existingBrand
 
@@ -72,8 +104,8 @@ class BrandServiceImplTest : BehaviorSpec({
 
             every { productRepository.findByBrandId(3L) } returns associatedProducts
 
-            Then("it should throw IllegalArgumentException due to associated products") {
-                shouldThrow<IllegalArgumentException> {
+            Then("it should throw BrandIsUsedByProductException due to associated products") {
+                shouldThrow<BrandIsUsedByProductException> {
                     brandService.delete(3L)
                 }
             }

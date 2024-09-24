@@ -61,6 +61,22 @@ class ProductControllerTest(
             }
         }
 
+        When("POST /api/v1/products is called with invalid request") {
+            val productPostRequest = ProductPostRequest(category = "", brandName = "A", price = 5000)
+
+            Then("it should save the new product") {
+                val requestBody = objectMapper.writeValueAsString(productPostRequest)
+
+                mockMvc.perform(
+                    post("/api/v1/products")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(requestBody)
+                )
+                    .andExpect(status().isBadRequest)
+                    .andExpect(jsonPath("$.category").value("category is required"))
+            }
+        }
+
         When("POST /api/v1/products is called with valid request") {
             val productPostRequest = ProductPostRequest(category = "신발", brandName = "A", price = 5000)
 
@@ -73,6 +89,21 @@ class ProductControllerTest(
                         .content(requestBody)
                 )
                     .andExpect(status().isNoContent)
+            }
+        }
+
+        When("PATCH /api/v1/products/{id} is called with invalid request") {
+            val productPatchRequest = ProductPatchRequest(category = null, brandName = null, price = -1000)
+            val requestBody = objectMapper.writeValueAsString(productPatchRequest)
+
+            Then("it should update the product") {
+                mockMvc.perform(
+                    patch("/api/v1/products/{id}", 1L)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(requestBody)
+                )
+                    .andExpect(status().isBadRequest)
+                    .andExpect(jsonPath("$.price").value("price must be positive or zero"))
             }
         }
 
