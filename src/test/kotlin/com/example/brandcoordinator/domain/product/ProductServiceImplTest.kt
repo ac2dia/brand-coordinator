@@ -54,12 +54,6 @@ class ProductServiceImplTest : BehaviorSpec({
             brand = aBrand,
             price = 10000
         )
-        val bBrandBottomProduct = Product(
-            id = 5L,
-            category = "하의",
-            brand = bBrand,
-            price = 11000
-        )
 
         When("findAll is called") {
             every { productRepository.findAll() } returns listOf(product)

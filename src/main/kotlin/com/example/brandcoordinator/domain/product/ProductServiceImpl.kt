@@ -1,5 +1,6 @@
 package com.example.brandcoordinator.domain.product
 
+import com.example.brandcoordinator.common.error.NotFoundException
 import com.example.brandcoordinator.domain.brand.BrandRepository
 import com.example.brandcoordinator.domain.brand.model.Brand
 import com.example.brandcoordinator.domain.product.dto.BrandProductSummaryResponse
@@ -9,7 +10,6 @@ import com.example.brandcoordinator.domain.product.dto.ProductPatchRequest
 import com.example.brandcoordinator.domain.product.dto.ProductPostRequest
 import com.example.brandcoordinator.domain.product.dto.ProductResponse
 import com.example.brandcoordinator.domain.product.model.Product
-import org.springframework.data.crossstore.ChangeSetPersister.NotFoundException
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 
@@ -98,8 +98,8 @@ class ProductServiceImpl(
     }
 
     private fun findById(id: Long): Product =
-        this.productRepository.findById(id).orElseThrow { NotFoundException() }
+        this.productRepository.findById(id).orElseThrow { NotFoundException("$id Product is not found by id") }
 
     private fun findBrandByName(name: String): Brand =
-        this.brandRepository.findByName(name = name).orElseThrow { NotFoundException() }
+        this.brandRepository.findByName(name = name).orElseThrow { NotFoundException("$name Product is not found by name") }
 }

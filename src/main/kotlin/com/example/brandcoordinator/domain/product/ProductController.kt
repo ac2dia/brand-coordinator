@@ -6,6 +6,7 @@ import com.example.brandcoordinator.domain.product.dto.LowestBrandProductSummary
 import com.example.brandcoordinator.domain.product.dto.ProductPatchRequest
 import com.example.brandcoordinator.domain.product.dto.ProductPostRequest
 import com.example.brandcoordinator.domain.product.dto.ProductResponse
+import jakarta.validation.Valid
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.DeleteMapping
 import org.springframework.web.bind.annotation.GetMapping
@@ -26,7 +27,7 @@ class ProductController(
     }
 
     @PostMapping("/api/v1/products")
-    fun save(@RequestBody productPostRequest: ProductPostRequest): ResponseEntity<Void> {
+    fun save(@Valid @RequestBody productPostRequest: ProductPostRequest): ResponseEntity<Void> {
         this.productService.save(productPostRequest = productPostRequest)
         return ResponseEntity.noContent().build()
     }
@@ -34,7 +35,7 @@ class ProductController(
     @PatchMapping("/api/v1/products/{id}")
     fun update(
         @PathVariable("id") id: Long,
-        @RequestBody productPatchRequest: ProductPatchRequest
+        @Valid @RequestBody productPatchRequest: ProductPatchRequest
     ): ResponseEntity<ProductResponse> {
         val modifiedProduct = this.productService.update(
             id = id,
