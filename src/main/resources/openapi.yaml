@@ -19,6 +19,12 @@ paths:
         - summary
       summary: Get summary by category
       description: Get summary by category
+      parameters:
+        - name: category
+          in: path
+          required: true
+          schema:
+            type: string
       responses:
         '200':
           description: Successful operation

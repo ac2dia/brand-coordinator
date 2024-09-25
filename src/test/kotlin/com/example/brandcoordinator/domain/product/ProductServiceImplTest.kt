@@ -13,8 +13,9 @@ import io.mockk.Runs
 import io.mockk.every
 import io.mockk.just
 import io.mockk.mockk
+import io.mockk.unmockkAll
 import io.mockk.verify
-import java.util.*
+import java.util.Optional
 
 
 class ProductServiceImplTest : BehaviorSpec({
@@ -27,6 +28,10 @@ class ProductServiceImplTest : BehaviorSpec({
         productRepository = productRepository,
         brandRepository = brandRepository
     )
+
+    afterEach {
+        unmockkAll()
+    }
 
     Given("a product exists") {
         val aBrand = Brand(id = 1L, name = "A")

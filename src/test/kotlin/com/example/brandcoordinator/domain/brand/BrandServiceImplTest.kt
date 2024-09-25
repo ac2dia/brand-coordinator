@@ -12,8 +12,9 @@ import io.kotest.core.spec.style.BehaviorSpec
 import io.kotest.matchers.shouldBe
 import io.mockk.every
 import io.mockk.mockk
+import io.mockk.unmockkAll
 import io.mockk.verify
-import java.util.*
+import java.util.Optional
 
 
 class BrandServiceImplTest : BehaviorSpec({
@@ -26,6 +27,10 @@ class BrandServiceImplTest : BehaviorSpec({
         productRepository = productRepository,
         brandRepository = brandRepository
     )
+
+    afterEach {
+        unmockkAll()
+    }
 
     Given("a brand exists") {
         val aBrand = Brand(id = 1L, name = "A")
